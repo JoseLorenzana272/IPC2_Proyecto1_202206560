@@ -7,10 +7,11 @@ from Señales import señales
 lista_señales = ListaEnlazada()
 lista_señal_datos = ListaEnlazada()
 
+
 class Leer_Archivo_xml:
     def leer_xml(self, ruta_archivo):
         # Cargar el archivo XML
-        tree = ET.parse('entrada.xml')
+        tree = ET.parse(ruta_archivo)
         root = tree.getroot()
         global lista_señal_datos
         # Iterar a través de las señales y sus datos
@@ -24,9 +25,12 @@ class Leer_Archivo_xml:
                 t = dato.get('t')
                 a = dato.get('A')
                 valor = dato.text
-                
-                datos_f = Frecuencia(t, a, valor)
-                lista_señal_datos.agregar(datos_f)
+                if int(valor) == 0:
+                    datos_f = Frecuencia(int(t), int(a), valor, 0)
+                    lista_señal_datos.agregar(datos_f)
+                else: 
+                    datos_f = Frecuencia(int(t), int(a), valor, 1)
+                    lista_señal_datos.agregar(datos_f)
         
             datos_s = señales(nombre, fila, columna, lista_señal_datos)
             lista_señales.agregar(datos_s)

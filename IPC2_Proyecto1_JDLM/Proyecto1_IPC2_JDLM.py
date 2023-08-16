@@ -25,7 +25,8 @@ def mostrar_menu():
         elif opcion == "2":
             # Procesar Archivo
             os.system("cls")
-            print(f"{Fore.GREEN}Ha seleccionado la opción 2; Cargar Instrucciones de Movimientos")
+            print(f"{Fore.GREEN}Ha seleccionado la opción 2; Procesar Archivo")
+            lista_señales.acceso()
         elif opcion == "3":
             # Escribir Archivo Salida
             os.system("cls")
@@ -35,9 +36,10 @@ def mostrar_menu():
             os.system("cls")
             print(f"{Fore.GREEN}Ha seleccionado la opción 4.")
         elif opcion == "5":
-            # Mostrar Datos del Estudiante
+            # Mostrar Datos del Estudiantes
             os.system("cls")
             print(f"{Fore.GREEN}Ha seleccionado la opción 5.")
+            print(f'Nombre: José Daniel Lorenzana Medina\nCarné: 202206560\nCurso: Introducción a la Programación y Computación 2\nSección: "A"\nCarrera: Ingeniería en Ciencias y Sistemas\nSemestre: 4to Semestre')
         elif opcion == "6":
             # Generar Gráfica
             os.system("cls")
