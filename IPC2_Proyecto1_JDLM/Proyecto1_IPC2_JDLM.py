@@ -26,6 +26,8 @@ def mostrar_menu():
             # Procesar Archivo
             os.system("cls")
             print(f"{Fore.GREEN}Ha seleccionado la opción 2; Procesar Archivo")
+            print(f'Calculando la matriz binaria...')
+            print(f'Calculando...')
             lista_señales.acceso()
         elif opcion == "3":
             # Escribir Archivo Salida

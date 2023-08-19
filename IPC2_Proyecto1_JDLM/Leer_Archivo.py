@@ -25,12 +25,13 @@ class Leer_Archivo_xml:
                 t = dato.get('t')
                 a = dato.get('A')
                 valor = dato.text
-                if int(valor) == 0:
-                    datos_f = Frecuencia(int(t), int(a), valor, 0)
-                    lista_señal_datos.agregar(datos_f)
-                else: 
-                    datos_f = Frecuencia(int(t), int(a), valor, 1)
-                    lista_señal_datos.agregar(datos_f)
+                if t <= fila and a <= columna:
+                    if int(valor) == 0:
+                        datos_f = Frecuencia(int(t), int(a), valor, 0, 0)
+                        lista_señal_datos.agregar(datos_f)
+                    else: 
+                        datos_f = Frecuencia(int(t), int(a), valor, 1, 0)
+                        lista_señal_datos.agregar(datos_f)
         
             datos_s = señales(nombre, fila, columna, lista_señal_datos)
             lista_señales.agregar(datos_s)
