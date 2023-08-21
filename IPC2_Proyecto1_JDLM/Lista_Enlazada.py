@@ -27,22 +27,25 @@ class ListaEnlazada:
     def mostrar1(self):
         actual = self.cabeza
         while actual:
-            print(f'Dato de Señal: {actual.dato.dato_frecuencia}', f'Dato Binario: {actual.dato.dato_binario}')
+            print(f'Dato de Señal: {actual.dato.dato_frecuencia}', f'Dato Binario: {actual.dato.dato_binario}', f'Comparado: {actual.dato.valor_comparado}')
+            
             actual = actual.siguiente
 
     def acceso(self):
         actual = self.cabeza
         while actual:
-            actual.dato.datos.analisis(actual.dato.columna, actual.dato.fila)
-            actual = actual.siguiente
             global lista_comparación
+            actual.dato.datos.analisis(actual.dato.columna, actual.dato.fila)
+            lista_comparación.lectura_comparado(actual.dato.fila, actual.dato.datos)
+            actual = actual.siguiente
             lista_comparación = ListaEnlazada()
+            
 
     def analisis(self, valor, fila_t):
         temporal = self.cabeza
         pos_y = temporal.dato.amplitud        
         contador = 0
-        contador_prueba = 1
+        contador_prueba = 1 
         print('\n')
         texto_binario = ''
         while contador != int(valor):
@@ -66,6 +69,7 @@ class ListaEnlazada:
                         texto_binario = texto_binario + str(temporal.dato.dato_binario)
                         print(temporal.dato.tiempo, pos_y, temporal.dato.dato_frecuencia, temporal.dato.dato_binario)
                 temporal = temporal.siguiente
+        
         lista_comparación.mostrar_temporal()
         lista_comparación.comparar(fila_t)
         lista_comparación.mostrar_temporal()
@@ -101,7 +105,18 @@ class ListaEnlazada:
                 temporal = temporal.siguiente
 
     
+    def lectura_comparado(self, fila_tiempo, datos_cambiados):
+        actual = self.cabeza
+        for i in range(1, int(fila_tiempo)+1):
+            datos_cambiados.asignar_comparado(actual.dato.verificador, i)
+            actual = actual.siguiente
 
+    def asignar_comparado(self, comparacion_dato, fila_tiempo):
+        actual = self.cabeza
+        while actual:
+            if actual.dato.tiempo == fila_tiempo:
+                actual.dato.valor_comparado  = comparacion_dato
+            actual = actual.siguiente
                 
 
 lista_comparación = ListaEnlazada()

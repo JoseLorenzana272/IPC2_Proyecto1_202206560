@@ -29,6 +29,7 @@ def mostrar_menu():
             print(f'Calculando la matriz binaria...')
             print(f'Calculando...')
             lista_señales.acceso()
+            lista_señales.mostrar()
         elif opcion == "3":
             # Escribir Archivo Salida
             os.system("cls")
