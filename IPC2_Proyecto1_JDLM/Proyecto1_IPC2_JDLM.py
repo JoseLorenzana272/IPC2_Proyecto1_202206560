@@ -1,6 +1,9 @@
 from colorama import Fore, init
 from Leer_Archivo import *
+import xml.etree.ElementTree as ET
+import xml.dom.minidom as minidom
 import os
+from Lista_Enlazada import *
 
 def mostrar_menu():
     while True:
@@ -26,14 +29,20 @@ def mostrar_menu():
             # Procesar Archivo
             os.system("cls")
             print(f"{Fore.GREEN}Ha seleccionado la opción 2; Procesar Archivo")
-            print(f'Calculando la matriz binaria...')
-            print(f'Calculando...')
+            print(f'{Fore.LIGHTMAGENTA_EX}Calculando la matriz binaria...')
+            print(f'{Fore.LIGHTMAGENTA_EX}Calculando...')
             lista_señales.acceso()
-            lista_señales.mostrar()
         elif opcion == "3":
             # Escribir Archivo Salida
             os.system("cls")
             print(f"{Fore.GREEN}Ha seleccionado la opción 3.")
+            print('Archivo generado exitosamente...')
+            root = ET.Element("senalesReducidas")
+            lista_grupos.escribir_xml(root)
+            xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="  ")
+            # Guardar el XML formateado en un archivo
+            with open("final.xml", "w") as f:
+                f.write(xmlstr)
         elif opcion == "4":
             # Crear Informe de Movimientos
             os.system("cls")
