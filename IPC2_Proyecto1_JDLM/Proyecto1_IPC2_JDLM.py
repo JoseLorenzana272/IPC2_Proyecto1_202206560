@@ -11,19 +11,26 @@ def mostrar_menu():
         print(f"{Fore.YELLOW}1. Cargar Archivo")
         print(f"{Fore.YELLOW}2. Procesar Archivo")
         print(f"{Fore.YELLOW}3. Escribir Archivo Salida")
-        print(f"{Fore.YELLOW}5. Mostrar Datos del Estudiante")
-        print(f"{Fore.YELLOW}6. Generar Gráfica")
-        print(f"{Fore.YELLOW}7. Salir")
+        print(f"{Fore.YELLOW}4. Mostrar Datos del Estudiante")
+        print(f"{Fore.YELLOW}5. Generar Gráfica")
+        print(f"{Fore.YELLOW}6. Salir")
         
         opcion = input(f"{Fore.LIGHTWHITE_EX}Seleccione una opción (1-4): ")
         
         if opcion == "1":
             # Cargar Archivo
             os.system("cls")
-            ruta = input(f"{Fore.LIGHTWHITE_EX}Ingrese la ruta del archivo: ")
-            print(f"{Fore.GREEN}Ha seleccionado la opción 1; Cargar Inventario Inicial")
-            Leer_Archivo_xml().leer_xml(ruta)
-            lista_señales.mostrar()
+            try:
+                ruta = input(f"{Fore.LIGHTWHITE_EX}Ingrese la ruta del archivo: ")
+                print(f"{Fore.GREEN}Ha seleccionado la opción 1; Cargar Inventario Inicial")
+                Leer_Archivo_xml().leer_xml(ruta)
+                lista_señales.mostrar()
+            except:
+                print(f"{Fore.RED}Error, no se pudo cargar el archivo.")
+                ruta = input(f"{Fore.LIGHTWHITE_EX}Ingrese la ruta del archivo: ")
+                print(f"{Fore.GREEN}Ha seleccionado la opción 1; Cargar Inventario Inicial")
+                Leer_Archivo_xml().leer_xml(ruta)
+                lista_señales.mostrar()
 
         elif opcion == "2":
             # Procesar Archivo
@@ -47,17 +54,14 @@ def mostrar_menu():
             # Crear Informe de Movimientos
             os.system("cls")
             print(f"{Fore.GREEN}Ha seleccionado la opción 4.")
+            print(f'{Fore.LIGHTMAGENTA_EX}Nombre: José Daniel Lorenzana Medina\nCarné: 202206560\nCurso: Introducción a la Programación y Computación 2\nSección: "A"\nCarrera: Ingeniería en Ciencias y Sistemas\nSemestre: 4to Semestre')
         elif opcion == "5":
             # Mostrar Datos del Estudiantes
             os.system("cls")
             print(f"{Fore.GREEN}Ha seleccionado la opción 5.")
-            print(f'Nombre: José Daniel Lorenzana Medina\nCarné: 202206560\nCurso: Introducción a la Programación y Computación 2\nSección: "A"\nCarrera: Ingeniería en Ciencias y Sistemas\nSemestre: 4to Semestre')
+            print(f"{Fore.YELLOW}Gráficas generadas exitosamente.")
+            lista_señales.grafica1()
         elif opcion == "6":
-            # Generar Gráfica
-            os.system("cls")
-            print(f"{Fore.GREEN}Ha seleccionado la opción 6.")
-        
-        elif opcion == "7":
             print("Saliendo del programa...")
             break
         else:

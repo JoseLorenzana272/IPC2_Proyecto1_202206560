@@ -5,6 +5,10 @@ from grupos_analizados import analisis_grupo
 from colorama import Fore, init
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
+from graficas import Graph
+import copy
+
+
 class ListaEnlazada:
     
     def __init__(self):
@@ -23,15 +27,15 @@ class ListaEnlazada:
     def mostrar(self):
         actual = self.cabeza
         while actual:
-            print(actual.dato.nombre)
-            print(f'Tiempo Máximo: {actual.dato.fila}')
+            print(f'{Fore.MAGENTA}{actual.dato.nombre}')
+            print(f'{Fore.MAGENTA}Tiempo Máximo: {actual.dato.fila}')
             actual.dato.datos.mostrar1()
             actual = actual.siguiente
 
     def mostrar1(self):
         actual = self.cabeza
         while actual:
-            print(f'T: {actual.dato.tiempo}', f'A: {actual.dato.amplitud}', f'Comparado: {actual.dato.valor_comparado}', f'Ya Comparado: {actual.dato.ya_comparado}')
+            print(f'{Fore.CYAN}T: {actual.dato.tiempo}', f'A: {actual.dato.amplitud}', f'Dato: {actual.dato.dato_frecuencia}')
             
             actual = actual.siguiente
 
@@ -44,7 +48,7 @@ class ListaEnlazada:
             lista_comparación.lectura_comparado(actual.dato.fila, actual.dato.datos)
             #print(f'SEÑAL: {actual.dato.nombre}\n')
             actual.dato.datos.sumar(actual.dato.fila, actual.dato.columna)
-            guardar_grupos = analisis_grupo(actual.dato.nombre, lista_sumas, actual.dato.columna)
+            guardar_grupos = analisis_grupo(actual.dato.nombre, lista_sumas, actual.dato.columna, actual.dato.nombre+'__', actual.dato.columna+'._')
             lista_grupos.agregar(guardar_grupos)
             #print(f'\n\n\n')
             actual = actual.siguiente
@@ -149,7 +153,7 @@ class ListaEnlazada:
                 y += 1
                 if contador2 > 0:
                     if grupo_suma != '':
-                        grupo_suma = grupo_suma + str(sumatoria)
+                        grupo_suma = grupo_suma + '-' + str(sumatoria)
                     else:
                         grupo_suma = str(sumatoria)
                     contador2 = 0
@@ -184,14 +188,14 @@ class ListaEnlazada:
     def mostrar_grupos(self):
         actual = self.cabeza
         while actual:
-            print(f'{Fore.LIGHTCYAN_EX}{actual.dato.nombre_grupo}')
+            print(f'{Fore.LIGHTCYAN_EX}{actual.dato.nombre_grupo}, Amplitud: {actual.dato.amplitud_salida}, Nodo: {actual.dato.nombre_nodo}')
             actual.dato.lista_grupos.mostrar_sumas()
             actual = actual.siguiente
 
     def mostrar_sumas(self):
         actual = self.cabeza
         while actual:
-            print(f'{Fore.LIGHTWHITE_EX}', actual.dato.numero_grupo, actual.dato.grupo, actual.dato.sumatorias)
+            print(f'{Fore.LIGHTWHITE_EX}', f'Grupo: {actual.dato.numero_grupo}', f't: {actual.dato.grupo}', f'Sumatoria: {actual.dato.sumatorias}')
             actual = actual.siguiente
                 
 
@@ -211,10 +215,87 @@ class ListaEnlazada:
             tiempos.text = actual.dato.grupo
             datos_grupo = ET.SubElement(grupo_nombre, "datosGrupo")
             contador_amplitud = 0
-            for i in actual.dato.sumatorias:
+            delimitador = actual.dato.sumatorias.split('-')
+            for i in delimitador:
                 contador_amplitud += 1
                 dato = ET.SubElement(datos_grupo, "dato", A=str(contador_amplitud))
                 dato.text = str(i)
+            actual = actual.siguiente
+
+    def grafica1(self):
+        actual = self.cabeza
+        while actual:
+            
+            g = Graph(actual.dato.nombre) 
+            g.add(actual.dato.nombre, f't= {actual.dato.fila}', 0)
+            g.add(actual.dato.nombre, f'A= {actual.dato.columna}', 1)
+            actual.dato.datos.grafica2(actual.dato.columna, actual.dato.nombre, g)
+            lista_grupos.grafica_reducida(g, actual.dato.nombre)
+            g.generar(actual.dato.nombre)
+            actual = actual.siguiente
+            
+    
+    def grafica2(self, valor, encabezado, g):
+        
+        temporal = self.cabeza
+        actual = self.cabeza
+        pos_y = temporal.dato.amplitud        
+        contador = 0
+        verificador = False
+        while contador != int(valor):
+            if temporal is None:
+                temporal = self.cabeza
+                actual = self.cabeza
+                verificador = False
+                contador += 1
+                pos_y += 1
+            else:
+                if temporal.dato.amplitud == pos_y:
+                    if verificador == False:
+                        
+                        #print(temporal.dato.dato_frecuencia)
+                        g.add2(encabezado, temporal.dato.dato_frecuencia, encabezado, temporal.dato.nombre_nodo)
+                        actual = temporal  
+                        verificador = True                      
+                    else:
+                        g.add2(actual.dato.dato_frecuencia, temporal.dato.dato_frecuencia, actual.dato.nombre_nodo, temporal.dato.nombre_nodo)
+                        actual = temporal
+                temporal = temporal.siguiente
+            
+    def grafica_reducida(self, g, nombre):
+        actual = self.cabeza
+        while actual:
+            if actual.dato.nombre_grupo == nombre:
+                
+                g.add2(actual.dato.nombre_grupo, f'A= {actual.dato.amplitud_salida}', actual.dato.nombre_nodo, actual.dato.nombre_amplitud)
+                actual.dato.lista_grupos.grafica_reducida2(g, actual.dato.nombre_nodo, actual.dato.nombre_grupo)
+            actual = actual.siguiente
+
+    def grafica_reducida2(self, g, nombre, valor):
+        actual = self.cabeza
+        temporal = ''
+        verificar = 0
+        contador = 0
+        contador2 = 0
+        while actual:
+            if verificar == 0:
+                g.add2(valor,f'g={actual.dato.numero_grupo}(t= {actual.dato.grupo})', nombre, actual.dato.numero_grupo)
+                verificar = 1
+                delimitador = actual.dato.sumatorias.split('-')
+                for suma in delimitador:
+                    contador += 1
+                    g.add2(valor, suma, nombre, f'Nodo'+str(contador))
+                temporal = actual
+            else:
+                g.add2(f'g={temporal.dato.numero_grupo}(t= {temporal.dato.grupo})', f'g={actual.dato.numero_grupo}(t= {actual.dato.grupo})', temporal.dato.numero_grupo, actual.dato.numero_grupo)
+                delimitador1 = temporal.dato.sumatorias.split('-')
+                delimitador2 = actual.dato.sumatorias.split('-')
+                for i, j in zip(delimitador1, delimitador2):
+                    contador2+=1
+                    contador+=1
+                    g.add2(i, j, f'Nodo'+str(contador2), f'Nodo'+str(contador))
+                    
+                temporal = actual
             actual = actual.siguiente
 
 lista_comparación = ListaEnlazada()
