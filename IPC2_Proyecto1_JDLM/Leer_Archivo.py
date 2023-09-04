@@ -45,7 +45,7 @@ class Leer_Archivo_xml:
                                 contador_t += 1
                                 lista_señal_datos.agregar(datos_f)
                 
-
+            lista_señal_datos.ordenar_por_t_a()
             datos_s = señales(nombre, fila, columna, lista_señal_datos)
             lista_señales.agregar(datos_s)
             lista_señal_datos = ListaEnlazada()

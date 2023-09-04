@@ -297,6 +297,34 @@ class ListaEnlazada:
                     
                 temporal = actual
             actual = actual.siguiente
+            
+    def ordenar_por_t_a(self):
+        if self.cabeza is None:
+            return
+
+        sorted_head = None
+        current = self.cabeza
+        while current:
+            next_node = current.siguiente
+            sorted_head = self.insert_into_sorted(sorted_head, current)
+            current = next_node
+
+        self.cabeza = sorted_head
+
+    def insert_into_sorted(self, sorted_head, nodo_a_insertar):
+        if sorted_head is None or (nodo_a_insertar.dato.tiempo < sorted_head.dato.tiempo) or (nodo_a_insertar.dato.tiempo == sorted_head.dato.tiempo and nodo_a_insertar.dato.amplitud < sorted_head.dato.amplitud):
+            nodo_a_insertar.siguiente = sorted_head
+            return nodo_a_insertar
+
+        current = sorted_head
+        while current.siguiente and not (nodo_a_insertar.dato.tiempo < current.siguiente.dato.tiempo) and not (nodo_a_insertar.dato.tiempo == current.siguiente.dato.tiempo and nodo_a_insertar.dato.amplitud < current.siguiente.dato.amplitud):
+            current = current.siguiente
+
+        nodo_a_insertar.siguiente = current.siguiente
+        current.siguiente = nodo_a_insertar
+        return sorted_head
+
+        
 
 lista_comparación = ListaEnlazada()
 lista_sumas = ListaEnlazada()
