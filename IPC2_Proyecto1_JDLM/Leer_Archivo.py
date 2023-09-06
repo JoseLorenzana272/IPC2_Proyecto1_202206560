@@ -22,20 +22,20 @@ class Leer_Archivo_xml:
             fila = senal.get('t')
             columna = senal.get('A')
             contador_t = 1
-
-            for dato in senal.findall('dato'):
-                t = dato.get('t')
-                a = dato.get('A')
-                if int(t) > 0 and int(t) <= 3600 and int(a) > 0 and int(a) <= 130:  # Corregir la condición aquí
-                    valor = dato.text
-                    
-                    if valor is None:
-                        print(f'{Fore.RED}Error, en la señal {nombre} en el dato {t},  {a} no tiene valor')
-                        datos_f = Frecuencia(int(t), int(a), '0', 0, 0, 0, '', nombre+'_'+str(contador_t))
-                        contador_t += 1
-                        lista_señal_datos.agregar(datos_f)
-                    else:
-                        if t <= fila and a <= columna:
+            if int(fila) > 0 and int(fila) <= 3600 and int(columna) > 0 and int(columna) <= 130:  # Corregir la condición aquí
+                for dato in senal.findall('dato'):
+                    t = dato.get('t')
+                    a = dato.get('A')
+                    if int(t) <= int(fila) and int(a) <= int(columna):
+                        valor = dato.text
+                        #contador_temp += 1
+                        if valor is None:
+                            print(f'{Fore.RED}Error, en la señal {nombre} en el dato {t},  {a} no tiene valor')
+                            datos_f = Frecuencia(int(t), int(a), '0', 0, 0, 0, '', nombre+'_'+str(contador_t))
+                            contador_t += 1
+                            lista_señal_datos.agregar(datos_f)
+                        else:
+                            
                             if int(valor) == 0:
                                 datos_f = Frecuencia(int(t), int(a), valor, 0, 0, 0, '', nombre+'_'+str(contador_t))
                                 contador_t += 1

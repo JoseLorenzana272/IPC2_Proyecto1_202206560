@@ -39,22 +39,28 @@ class ListaEnlazada:
             
             actual = actual.siguiente
 
-    def acceso(self):
+    def acceso(self, nombre_señal):
         actual = self.cabeza
+        validar = False
         while actual:
-            global lista_comparación
-            global lista_sumas
-            actual.dato.datos.analisis(actual.dato.columna, actual.dato.fila)
-            lista_comparación.lectura_comparado(actual.dato.fila, actual.dato.datos)
-            #print(f'SEÑAL: {actual.dato.nombre}\n')
-            actual.dato.datos.sumar(actual.dato.fila, actual.dato.columna)
-            guardar_grupos = analisis_grupo(actual.dato.nombre, lista_sumas, actual.dato.columna, actual.dato.nombre+'__', actual.dato.columna+'._')
-            lista_grupos.agregar(guardar_grupos)
-            #print(f'\n\n\n')
+            if actual.dato.nombre == nombre_señal:
+                global lista_comparación
+                global lista_sumas
+                actual.dato.datos.analisis(actual.dato.columna, actual.dato.fila)
+                lista_comparación.lectura_comparado(actual.dato.fila, actual.dato.datos)
+                #print(f'SEÑAL: {actual.dato.nombre}\n')
+                actual.dato.datos.sumar(actual.dato.fila, actual.dato.columna)
+                guardar_grupos = analisis_grupo(actual.dato.nombre, lista_sumas, actual.dato.columna, actual.dato.nombre+'__', actual.dato.columna+'._')
+                lista_grupos.agregar(guardar_grupos)
+                #print(f'\n\n\n')
+            
+                lista_comparación = ListaEnlazada()
+                lista_sumas = ListaEnlazada()
+                lista_grupos.mostrar_grupos(nombre_señal)
+                validar = True
             actual = actual.siguiente
-            lista_comparación = ListaEnlazada()
-            lista_sumas = ListaEnlazada()
-        lista_grupos.mostrar_grupos()
+        return validar
+        
             
 
     def analisis(self, valor, fila_t):
@@ -185,11 +191,12 @@ class ListaEnlazada:
 
     
 
-    def mostrar_grupos(self):
+    def mostrar_grupos(self, nombre):
         actual = self.cabeza
         while actual:
-            print(f'{Fore.LIGHTCYAN_EX}{actual.dato.nombre_grupo}, Amplitud: {actual.dato.amplitud_salida}, Nodo: {actual.dato.nombre_nodo}')
-            actual.dato.lista_grupos.mostrar_sumas()
+            if actual.dato.nombre_grupo == nombre:
+                print(f'{Fore.LIGHTCYAN_EX}{actual.dato.nombre_grupo}, Amplitud: {actual.dato.amplitud_salida}, Nodo: {actual.dato.nombre_nodo}')
+                actual.dato.lista_grupos.mostrar_sumas()
             actual = actual.siguiente
 
     def mostrar_sumas(self):
@@ -199,12 +206,17 @@ class ListaEnlazada:
             actual = actual.siguiente
                 
 
-    def escribir_xml(self, referencia):
+    def escribir_xml(self, nombre):
         actual = self.cabeza
         while actual:
-            señal_nombre = ET.SubElement(referencia, "senal", nombre=actual.dato.nombre_grupo, A=actual.dato.amplitud_salida)
-            actual.dato.lista_grupos.salida(señal_nombre)
-            
+            if actual.dato.nombre_grupo == nombre:
+                root = ET.Element("senalesReducidas")
+                señal_nombre = ET.SubElement(root, "senal", nombre=actual.dato.nombre_grupo, A=actual.dato.amplitud_salida)
+                actual.dato.lista_grupos.salida(señal_nombre)
+                xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="  ")
+                # Guardar el XML formateado en un archivo
+                with open("final.xml", "w") as f:
+                    f.write(xmlstr)
             actual = actual.siguiente
 
     def salida(self, referencia):
@@ -222,16 +234,16 @@ class ListaEnlazada:
                 dato.text = str(i)
             actual = actual.siguiente
 
-    def grafica1(self):
+    def grafica1(self, nombre_señal):
         actual = self.cabeza
         while actual:
-            
-            g = Graph(actual.dato.nombre) 
-            g.add(actual.dato.nombre, f't= {actual.dato.fila}', 0)
-            g.add(actual.dato.nombre, f'A= {actual.dato.columna}', 1)
-            actual.dato.datos.grafica2(actual.dato.columna, actual.dato.nombre, g)
-            lista_grupos.grafica_reducida(g, actual.dato.nombre)
-            g.generar(actual.dato.nombre)
+            if actual.dato.nombre == nombre_señal:
+                g = Graph(actual.dato.nombre) 
+                g.add(actual.dato.nombre, f't= {actual.dato.fila}', 0)
+                g.add(actual.dato.nombre, f'A= {actual.dato.columna}', 1)
+                actual.dato.datos.grafica2(actual.dato.columna, actual.dato.nombre, g)
+                lista_grupos.grafica_reducida(g, actual.dato.nombre)
+                g.generar(actual.dato.nombre)
             actual = actual.siguiente
             
     
@@ -323,6 +335,12 @@ class ListaEnlazada:
         nodo_a_insertar.siguiente = current.siguiente
         current.siguiente = nodo_a_insertar
         return sorted_head
+    
+    def mostrar_señales(self):
+        actual = self.cabeza
+        while actual:
+            print(f'{Fore.LIGHTCYAN_EX}{actual.dato.nombre}')
+            actual = actual.siguiente
 
         
 

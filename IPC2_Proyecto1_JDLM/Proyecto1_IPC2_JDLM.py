@@ -5,6 +5,9 @@ import xml.dom.minidom as minidom
 import os
 from Lista_Enlazada import *
 
+global nombre
+nombre = ''
+
 def mostrar_menu():
     while True:
         print(f"{Fore.LIGHTWHITE_EX}-------------Menú:-------------")
@@ -35,21 +38,23 @@ def mostrar_menu():
         elif opcion == "2":
             # Procesar Archivo
             os.system("cls")
+            
             print(f"{Fore.GREEN}Ha seleccionado la opción 2; Procesar Archivo")
+            lista_señales.mostrar_señales()
+            nombre = input(f"{Fore.LIGHTWHITE_EX}Ingrese el nombre de la señal: ")
             print(f'{Fore.LIGHTMAGENTA_EX}Calculando la matriz binaria...')
             print(f'{Fore.LIGHTMAGENTA_EX}Calculando...')
-            lista_señales.acceso()
+            if lista_señales.acceso(nombre) is False:
+                nombre = input(f"{Fore.LIGHTWHITE_EX}Ingrese el nombre de la señal: ")
+                lista_señales.acceso(nombre)
         elif opcion == "3":
             # Escribir Archivo Salida
             os.system("cls")
             print(f"{Fore.GREEN}Ha seleccionado la opción 3.")
             print('Archivo generado exitosamente...')
-            root = ET.Element("senalesReducidas")
-            lista_grupos.escribir_xml(root)
-            xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="  ")
-            # Guardar el XML formateado en un archivo
-            with open("final.xml", "w") as f:
-                f.write(xmlstr)
+            
+            lista_grupos.escribir_xml(nombre)
+            
         elif opcion == "4":
             # Crear Informe de Movimientos
             os.system("cls")
@@ -60,7 +65,7 @@ def mostrar_menu():
             os.system("cls")
             print(f"{Fore.GREEN}Ha seleccionado la opción 5.")
             print(f"{Fore.YELLOW}Gráficas generadas exitosamente.")
-            lista_señales.grafica1()
+            lista_señales.grafica1(nombre)
         elif opcion == "6":
             print("Saliendo del programa...")
             break
